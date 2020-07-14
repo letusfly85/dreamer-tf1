@@ -137,13 +137,11 @@ def episode_reader(
     filename, resize=None, max_length=None, action_noise=None,
     clip_rewards=False, pcont_scale=None):
   try:
-    with tf.gfile.Open(filename, 'rb') as file_:
-      episode = np.load(file_)
+    episode = np.load(filename)
   except (IOError, ValueError):
     # Try again one second later, in case the file was still being written.
     time.sleep(1)
-    with tf.gfile.Open(filename, 'rb') as file_:
-      episode = np.load(file_)
+    episode = np.load(filename)
   episode = {key: _convert_type(episode[key]) for key in episode.keys()}
   episode['return'] = np.cumsum(episode['reward'])
   if 'reward_mask' not in episode:
